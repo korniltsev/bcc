@@ -43,7 +43,7 @@ public:
   virtual ~SymbolCache() = default;
 
   virtual void refresh() = 0;
-  virtual bool resolve_addr(uint64_t addr, struct bcc_symbol *sym, bool demangle = true) = 0;
+  virtual bool resolve_addr(uint64_t addr, struct bcc_symbol *sym, bool demangle, bool stale_check) = 0;
   virtual bool resolve_name(const char *module, const char *name,
                             uint64_t *addr) = 0;
 };
@@ -63,7 +63,7 @@ class KSyms : SymbolCache {
   static void _add_symbol(const char *, const char *, uint64_t, void *);
 
 public:
-  virtual bool resolve_addr(uint64_t addr, struct bcc_symbol *sym, bool demangle = true) override;
+  virtual bool resolve_addr(uint64_t addr, struct bcc_symbol *sym, bool demangle, bool stale_check) override;
   virtual bool resolve_name(const char *unused, const char *name,
                             uint64_t *addr) override;
   virtual void refresh() override;
@@ -162,7 +162,7 @@ class ProcSyms : SymbolCache {
 public:
   ProcSyms(int pid, struct bcc_symbol_option *option = nullptr);
   virtual void refresh() override;
-  virtual bool resolve_addr(uint64_t addr, struct bcc_symbol *sym, bool demangle = true) override;
+  virtual bool resolve_addr(uint64_t addr, struct bcc_symbol *sym, bool demangle, bool do_stale_check) override;
   virtual bool resolve_name(const char *module, const char *name,
                             uint64_t *addr) override;
 };

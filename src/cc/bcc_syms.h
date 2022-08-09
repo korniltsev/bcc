@@ -61,9 +61,9 @@ void bcc_free_symcache(void *symcache, int pid);
 // __cxa_demangle function call, which is supposed to be freed by caller. Call
 // this function after done using returned result of bcc_symcache_resolve.
 void bcc_symbol_free_demangle_name(struct bcc_symbol *sym);
-int bcc_symcache_resolve(void *symcache, uint64_t addr, struct bcc_symbol *sym);
+int bcc_symcache_resolve(void *symcache, uint64_t addr, struct bcc_symbol *sym, bool stale_check);
 int bcc_symcache_resolve_no_demangle(void *symcache, uint64_t addr,
-                                     struct bcc_symbol *sym);
+                                     struct bcc_symbol *sym, bool stale_check);
 
 int bcc_symcache_resolve_name(void *resolver, const char *module,
                               const char *name, uint64_t *addr);

@@ -59,7 +59,7 @@ void KSyms::refresh() {
   }
 }
 
-bool KSyms::resolve_addr(uint64_t addr, struct bcc_symbol *sym, bool demangle) {
+bool KSyms::resolve_addr(uint64_t addr, struct bcc_symbol *sym, bool demangle, bool stale_check) {
   refresh();
 
   std::vector<Symbol>::iterator it;
@@ -166,8 +166,8 @@ int ProcSyms::_add_module(mod_info *mod, int enter_ns, void *payload) {
 }
 
 bool ProcSyms::resolve_addr(uint64_t addr, struct bcc_symbol *sym,
-                            bool demangle) {
-  if (procstat_.is_stale())
+                            bool demangle, bool stale_check) {
+  if (stale_check && procstat_.is_stale())
     refresh();
 
   memset(sym, 0, sizeof(struct bcc_symbol));
@@ -514,15 +514,15 @@ void bcc_symbol_free_demangle_name(struct bcc_symbol *sym) {
 }
 
 int bcc_symcache_resolve(void *resolver, uint64_t addr,
-                         struct bcc_symbol *sym) {
+                         struct bcc_symbol *sym, bool stale_check) {
   SymbolCache *cache = static_cast<SymbolCache *>(resolver);
-  return cache->resolve_addr(addr, sym) ? 0 : -1;
+  return cache->resolve_addr(addr, sym, true, stale_check) ? 0 : -1;
 }
 
 int bcc_symcache_resolve_no_demangle(void *resolver, uint64_t addr,
-                                     struct bcc_symbol *sym) {
+                                     struct bcc_symbol *sym, bool stale_check) {
   SymbolCache *cache = static_cast<SymbolCache *>(resolver);
-  return cache->resolve_addr(addr, sym, false) ? 0 : -1;
+  return cache->resolve_addr(addr, sym, false, stale_check) ? 0 : -1;
 }
 
 int bcc_symcache_resolve_name(void *resolver, const char *module,
