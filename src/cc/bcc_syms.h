@@ -21,6 +21,7 @@ extern "C" {
 #endif
 
 #include <stdint.h>
+#include <stdbool.h>
 #include "linux/bpf.h"
 #include "bcc_proc.h"
 
