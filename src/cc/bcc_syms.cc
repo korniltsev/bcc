@@ -53,8 +53,14 @@ void KSyms::_add_symbol(const char *symname, const char *modname, uint64_t addr,
 }
 
 void KSyms::refresh() {
+  if (failed_) {
+    return;
+  }
   if (syms_.empty()) {
-    bcc_procutils_each_ksym(_add_symbol, this);
+    int res = bcc_procutils_each_ksym(_add_symbol, this);
+    if (res != 0) {
+      failed_ = true;
+    }
     std::sort(syms_.begin(), syms_.end());
   }
 }

@@ -60,6 +60,7 @@ class KSyms : SymbolCache {
 
   std::vector<Symbol> syms_;
   std::unordered_map<std::string, uint64_t> symnames_;
+  bool failed_ = false;
   static void _add_symbol(const char *, const char *, uint64_t, void *);
 
 public:
